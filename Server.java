@@ -5,6 +5,9 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.Key;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
 import java.util.Base64;
 
 import javax.crypto.KeyAgreement;
@@ -40,9 +43,13 @@ public class Server implements Runnable {
 			BufferedReader input = new BufferedReader(new InputStreamReader(csocket.getInputStream()));
 			
 			// Generate Private Key
-			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-			keyGen.init(256);
-			SecretKey secretkey = keyGen.generateKey();
+			//KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+			//keyGen.init(256);
+			//SecretKey secretkey = keyGen.generateKey();
+			KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DH");
+			keyGen.initialize(128);
+			KeyPair pair = keyGen.generateKeyPair();
+			PrivateKey secretkey = pair.getPrivate();
 			
 			String encodedKey = Base64.getEncoder().encodeToString(secretkey.getEncoded());
 			System.out.println("Here's my privatekey: " + encodedKey);
