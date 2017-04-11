@@ -4,22 +4,24 @@
 #include <stdlib.h>
 #include "MyEncrypt.h"
 
-void encrypt (int *v, int *k);
+void encrypt (int *v, jint *k);
 
 // Defines the JNICALL of the MyInsertionSort for insertionsort
 JNIEXPORT jstring JNICALL Java_MyEncrypt_encrypt
-(JNIEnv *env, jobject object, jint *secret_key, jstring message, jint size_array){
+(JNIEnv *env, jobject object, jintArray secret_key, jstring message, jint size_array){
 
   // Converts Java String into constant char * to be used in c
   const char *input_str = (*env)->GetStringUTFChars(env, message, 0);
 
   // Master call of insertionsort
-  encrypt((int*) input_str, secret_key);
+  encrypt((int*) input_str, (int *) secret_key);
+
+  jstring jstrBuf = (*env)->NewStringUTF(env, input_str);
 
   // Releases the converted variables
-  (*env)->ReleaseStringUTFChars(env, input, input_str);
+  (*env)->ReleaseStringUTFChars(env, message, input_str);
 
-  return input_str;
+  return jstrBuf;
 }
 
 void encrypt (int *v, jint *k){

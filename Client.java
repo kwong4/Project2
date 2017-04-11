@@ -78,7 +78,7 @@ public class Client {
 			try {
 				encrypt.join();
 				String message = encrypt.getEncrpyted_message();
-				System.out.println("Here's the messsage I got ENCRYPTED: " + message);
+				System.out.println("Here's the messsage I'm going to ENCRYPTED: " + message);
 				out.println(message);
 			} catch (Exception e) {
 				System.out.println(e);

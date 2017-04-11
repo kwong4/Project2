@@ -92,7 +92,9 @@ public class Server implements Runnable {
 			int[] converted_key = new int[intBuf.remaining()];
 			
 			String received = input.readLine();
-			
+
+			System.out.println("Here's the message I got ENCRYPTED: " + received);			
+
 			MyDecrypt decrypt = new MyDecrypt(converted_key, received, 6);
 			decrypt.start();
 			try {
