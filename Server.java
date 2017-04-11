@@ -8,6 +8,7 @@ import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.Base64;
 
 import javax.crypto.KeyAgreement;
@@ -50,6 +51,7 @@ public class Server implements Runnable {
 			keyGen.initialize(128);
 			KeyPair pair = keyGen.generateKeyPair();
 			PrivateKey secretkey = pair.getPrivate();
+			PublicKey publickey = pair.getPublic();
 			
 			String encodedKey = Base64.getEncoder().encodeToString(secretkey.getEncoded());
 			System.out.println("Here's my privatekey: " + encodedKey);
@@ -57,7 +59,7 @@ public class Server implements Runnable {
 			//Setup KeyAgreement
 			KeyAgreement keyAgree = KeyAgreement.getInstance("DH");
 			keyAgree.init(secretkey);
-			Key publickey = keyAgree.doPhase(secretkey, false);
+			keyAgree.doPhase(secretkey, false);
 			
 			// Encode key
 			encodedKey = Base64.getEncoder().encodeToString(publickey.getEncoded());
