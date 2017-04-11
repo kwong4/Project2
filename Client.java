@@ -5,6 +5,9 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -65,6 +68,21 @@ public class Client {
 			SecretKey shared_secret = keyAgree.generateSecret("AES");
 			encodedKey = Base64.getEncoder().encodeToString(shared_secret.getEncoded());
 			System.out.println("HERE IS MY SECRET KEY!!!" + encodedKey);
+			
+			byte[] decoded_key = Base64.getDecoder().decode(encodedKey);
+			IntBuffer intBuf = ByteBuffer.wrap(decoded_key).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
+			int[] converted_key = new int[intBuf.remaining()];
+			
+			MyEncrypt encrypt = new MyEncrypt(converted_key, "Hello", 6);
+			encrypt.start();
+			try {
+				encrypt.join();
+				String message = encrypt.getEncrpyted_message();
+				System.out.println("Here's the messsage I got ENCRYPTED: " + message);
+				out.println(message);
+			} catch (Exception e) {
+				System.out.println(e);
+			}
 		}
 		catch (Exception e){
 			System.out.println("Error");

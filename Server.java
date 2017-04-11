@@ -6,6 +6,9 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -77,13 +80,28 @@ public class Server implements Runnable {
 			
 			encodedKey = Base64.getEncoder().encodeToString(received_publickey.getEncoded());
 			System.out.println("Here's what I got" + encodedKey);
-			
 			keyAgree.doPhase(received_publickey, true);
 			
 			// Generate Secret Key
 			SecretKey shared_secret = keyAgree.generateSecret("AES");
 			encodedKey = Base64.getEncoder().encodeToString(shared_secret.getEncoded());
 			System.out.println("HERE IS MY SECRET KEY!!!" + encodedKey);
+			
+			byte[] decoded_key = Base64.getDecoder().decode(encodedKey);
+			IntBuffer intBuf = ByteBuffer.wrap(decoded_key).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
+			int[] converted_key = new int[intBuf.remaining()];
+			
+			String received = input.readLine();
+			
+			MyDecrypt decrypt = new MyDecrypt(converted_key, received, 6);
+			decrypt.start();
+			try {
+				decrypt.join();
+				String message = decrypt.getDecrpyted_message();
+				System.out.println("Here's the messsage I got DECRYPTED: " + message);
+			} catch (Exception e) {
+				System.out.println(e);
+			}
 			
 			csocket.close();
 		} catch(Exception e) {
