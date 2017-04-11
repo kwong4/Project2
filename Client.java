@@ -26,7 +26,8 @@ public class Client {
 			keyGen.init(256);
 			SecretKey secretkey = keyGen.generateKey();
 			
-			System.out.println("Here's my privatekey: " + secretkey);
+			String encodedKey = Base64.getEncoder().encodeToString(secretkey.getEncoded());
+			System.out.println("Here's my privatekey: " + encodedKey);
 			
 			//Setup KeyAgreement
 			KeyAgreement keyAgree = KeyAgreement.getInstance("DH");
@@ -34,7 +35,7 @@ public class Client {
 			Key publickey = keyAgree.doPhase(secretkey, false);
 			
 			// Encode key
-			String encodedKey = Base64.getEncoder().encodeToString(publickey.getEncoded());
+			encodedKey = Base64.getEncoder().encodeToString(publickey.getEncoded());
 			
 			System.out.println("Here's what I'm about to send" + encodedKey);
 			// Send public key
@@ -50,7 +51,8 @@ public class Client {
 			
 			// Generate Secret Key
 			SecretKey shared_secret = keyAgree.generateSecret("AES");
-			System.out.println("HERE IS MY SECRET KEY!!!" + shared_secret);
+			encodedKey = Base64.getEncoder().encodeToString(shared_secret.getEncoded());
+			System.out.println("HERE IS MY SECRET KEY!!!" + encodedKey);
 		}
 		catch (Exception e){
 			System.out.println("Error");
