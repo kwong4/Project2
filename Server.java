@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -42,6 +44,8 @@ public class Server implements Runnable {
 		try {
 			PrintWriter out =  new PrintWriter(csocket.getOutputStream(), true);
 			BufferedReader input = new BufferedReader(new InputStreamReader(csocket.getInputStream()));
+			ObjectOutputStream os = new ObjectOutputStream(csocket.getOutputStream());
+			ObjectInputStream is = new ObjectInputStream(csocket.getInputStream());
 			
 			// Generate Private Key
 			//KeyGenerator keyGen = KeyGenerator.getInstance("AES");
@@ -59,21 +63,22 @@ public class Server implements Runnable {
 			//Setup KeyAgreement
 			KeyAgreement keyAgree = KeyAgreement.getInstance("DH");
 			keyAgree.init(secretkey);
-			keyAgree.doPhase(secretkey, false);
+			//keyAgree.doPhase(secretkey, false);
 			
 			// Encode key
 			encodedKey = Base64.getEncoder().encodeToString(publickey.getEncoded());
 			
 			System.out.println("Here's what I'm about to send" + encodedKey);
 			// Send public key
-			out.println(encodedKey);
+			//out.println(encodedKey);
+			os.writeObject(publickey);
 			
-			String message = input.readLine();
-			System.out.println("Here's what I got" + message);
+			PublicKey received_publickey = (PublicKey) is.readObject();
 			
-			byte[] decodedkey = Base64.getDecoder().decode(message);
-			Key received_public_key = new SecretKeySpec(decodedkey, 0, decodedkey.length, "AES");
-			keyAgree.doPhase(received_public_key, true);
+			encodedKey = Base64.getEncoder().encodeToString(received_publickey.getEncoded());
+			System.out.println("Here's what I got" + encodedKey);
+			
+			keyAgree.doPhase(received_publickey, true);
 			
 			// Generate Secret Key
 			SecretKey shared_secret = keyAgree.generateSecret("AES");
