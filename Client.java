@@ -33,7 +33,7 @@ public class Client {
 //			keyGen.init(256);
 //			SecretKey secretkey = keyGen.generateKey();
 			KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DH");
-			keyGen.initialize(128);
+			keyGen.initialize(512);
 			KeyPair pair = keyGen.generateKeyPair();
 			PrivateKey secretkey = pair.getPrivate();
 			PublicKey publickey = pair.getPublic();
