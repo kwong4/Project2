@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -123,12 +124,48 @@ public class Client {
 			System.out.println("What I received a" + string_ack + "a");
 			if (string_ack.equals("ACK")) {
 				System.out.println("Authorized");
+				
+				while (true) {
+					System.out.println("Please enter a filename: ");
+					String filename = br.readLine();
+					
+					byte[] filename_byte_arr = filename.getBytes();
+					int[] filename_int_arr = convertBytetoIntArr(filename_byte_arr);
+					
+					encrypt.encryption(filename_int_arr);
+					os.writeObject(filename_int_arr);
+					
+					acknowledgement = (int[]) is.readObject();
+					decrypt.decryption(acknowledgement);
+					string_ack = new String(converted_ack);
+					if (string_ack.equals("ACK")) {
+						int[] file_int = (int[]) is.readObject();
+						byte[] file_byte = convertInttoByteArr(file_int);
+						
+						FileOutputStream stream = new FileOutputStream(filename);
+						try {
+							stream.write(file_byte);
+						}
+						catch (Exception e) {
+							System.out.println(e);
+						}
+						finally {
+							stream.close();
+						}
+					}
+					else {
+						System.out.println("File was not found");
+					}
+				}
+				
 			}
 			else if (string_ack.equals("NOP")) {
 				System.out.println("Not Authorized...");
+				clientSocket.close();
 			}
 			else {
 				System.out.println("Error receiving ack");
+				clientSocket.close();
 			}
 		}
 		catch (Exception e){

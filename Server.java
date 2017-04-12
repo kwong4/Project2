@@ -176,6 +176,45 @@ public class Server implements Runnable {
 				encrypt.encryption(ack_int);
 				os.writeObject(ack_int);
 				System.out.println("User is authorized!");
+				
+				while (true) {
+					// Filename
+					int[] filename = (int[]) is.readObject();
+					decrypt.decryption(filename);
+					byte[] filename_byte = convertInttoByteArr(filename);
+					String filename_str = new String(filename_byte);
+					
+					if (!filename.equals("FIN")) {
+						File file = new File(filename_str);
+						
+						if (file.exists()) {
+							ack = new String("ACK");
+							ack_byte = ack.getBytes();
+							ack_int = convertBytetoIntArr(ack_byte);
+							encrypt.encryption(ack_int);
+							os.writeObject(ack_int);
+							
+							byte[] file_byte = new byte[(int) file.length()];
+							int[] file_int = convertBytetoIntArr(file_byte);
+							
+							encrypt.encryption(file_int);
+							
+							os.writeObject(file_int);
+						}
+						else {
+							ack = new String("FNF");
+							ack_byte = ack.getBytes();
+							ack_int = convertBytetoIntArr(ack_byte);
+							encrypt.encryption(ack_int);
+							os.writeObject(ack_int);
+						}
+					}
+					else {
+						break;
+					}
+				}
+				System.out.println("Ending signal detected... Closing Connection");
+				csocket.close();
 			}
 			else {
 				ack = new String("NOP");
