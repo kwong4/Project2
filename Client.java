@@ -23,6 +23,14 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class Client {
 
+	public static int[] convertBytetoIntArr(byte[] array) {
+		int[] converted = new int[array.length];
+		for (int i = 0; i < array.length; i++) {
+			converted[i] = array[i];
+		}
+		return converted;
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		System.out.println("Starting Client connection...");
@@ -67,10 +75,7 @@ public class Client {
 			}
 
 			// Convert received message to int array
-			int[] secret_key = new int[shared_secret.length];
-			for (int i = 0; i < shared_secret.length; i++) {
-				secret_key[i] = shared_secret[i];
-			}
+			int[] secret_key = convertBytetoIntArr(shared_secret);
 
 			MyEncrypt encrypt = new MyEncrypt(secret_key, ret);
 			encrypt.encryption();
