@@ -16,10 +16,10 @@ extern "C" {
 /*
  * Class:     MyDecrypt
  * Method:    decrypt
- * Signature: ([ILjava/lang/String;I)Ljava/lang/String;
+ * Signature: ([I[II)V
  */
-JNIEXPORT jstring JNICALL Java_MyDecrypt_decrypt
-  (JNIEnv *, jobject, jintArray, jstring, jint);
+JNIEXPORT void JNICALL Java_MyDecrypt_decrypt
+  (JNIEnv *, jobject, jintArray, jintArray, jint);
 
 #ifdef __cplusplus
 }

@@ -14,6 +14,7 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
+import java.util.Arrays;
 
 import javax.crypto.KeyAgreement;
 import javax.crypto.KeyGenerator;
@@ -65,21 +66,40 @@ public class Client {
 			keyAgree.doPhase(received_publickey, true);
 			
 			// Generate Secret Key
-			SecretKey shared_secret = keyAgree.generateSecret("AES");
-			encodedKey = Base64.getEncoder().encodeToString(shared_secret.getEncoded());
-			System.out.println("HERE IS MY SECRET KEY!!!" + encodedKey);
+			byte[] shared_secret = keyAgree.generateSecret();
+			//encodedKey = Base64.getEncoder().encodeToString(shared_secret.getEncoded());
+			System.out.println("HERE IS MY SECRET KEY!!!" + Arrays.toString(shared_secret));
 			
-			byte[] decoded_key = Base64.getDecoder().decode(encodedKey);
-			IntBuffer intBuf = ByteBuffer.wrap(decoded_key).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
-			int[] converted_key = new int[intBuf.remaining()];
+			//byte[] decoded_key = Base64.getDecoder().decode(encodedKey);
+			//byte[] decoded_secret_key = Base64.getDecoder().decode(shared_secret);
+			//IntBuffer intBuf = ByteBuffer.wrap(decoded_key).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
+			//int[] converted_key = new int[intBuf.remaining()];
+
+			String test = "hello";
+			byte[] tester = test.getBytes();
+
+			System.out.println("Message to be sent" + Arrays.toString(tester));
+
+			int[] ret = new int[tester.length];
+			for (int i = 0; i < tester.length; i++) {
+				ret[i] = tester[i];
+			}
+
+			int[] ret2 = new int[shared_secret.length];
+			for (int i = 0; i < shared_secret.length; i++) {
+				ret2[i] = shared_secret[i];
+			}
 			
-			MyEncrypt encrypt = new MyEncrypt(converted_key, "Hello", 6);
+			//System.out.println("Here's my converted key: " + Arrays.toString(converted_key));
+
+			MyEncrypt encrypt = new MyEncrypt(ret2, ret, 6);
 			encrypt.start();
 			try {
 				encrypt.join();
-				String message = encrypt.getEncrpyted_message();
-				System.out.println("Here's the messsage I'm going to ENCRYPTED: " + message);
-				out.println(message);
+				encrypt.getEncrpyted_message();
+				System.out.println("Here's the messsage I ENCRYPTED: " + Arrays.toString(ret));
+				os.writeObject(ret);
+				//out.println(message);
 			} catch (Exception e) {
 				System.out.println(e);
 			}

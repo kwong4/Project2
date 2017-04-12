@@ -15,6 +15,7 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
+import java.util.Arrays;
 
 import javax.crypto.KeyAgreement;
 import javax.crypto.KeyGenerator;
@@ -83,24 +84,37 @@ public class Server implements Runnable {
 			keyAgree.doPhase(received_publickey, true);
 			
 			// Generate Secret Key
-			SecretKey shared_secret = keyAgree.generateSecret("AES");
-			encodedKey = Base64.getEncoder().encodeToString(shared_secret.getEncoded());
-			System.out.println("HERE IS MY SECRET KEY!!!" + encodedKey);
+			byte[] shared_secret = keyAgree.generateSecret();
+			//encodedKey = Base64.getEncoder().encodeToString(shared_secret.getEncoded());
+			//System.out.println("HERE IS MY SECRET KEY!!!" + encodedKey);
 			
 			byte[] decoded_key = Base64.getDecoder().decode(encodedKey);
-			IntBuffer intBuf = ByteBuffer.wrap(decoded_key).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
-			int[] converted_key = new int[intBuf.remaining()];
+
+			//System.out.println("Are they equal? : " + Arrays.equals(decoded_key, decoded_key2));
+			//IntBuffer intBuf = ByteBuffer.wrap(decoded_key).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
+			//int[] converted_key = new int[intBuf.remaining()];
 			
-			String received = input.readLine();
+			//String received = input.readLine();
 
-			System.out.println("Here's the message I got ENCRYPTED: " + received);			
+			int[] received = (int[]) is.readObject();
 
-			MyDecrypt decrypt = new MyDecrypt(converted_key, received, 6);
+			int[] ret2 = new int[shared_secret.length];
+			for (int i = 0; i < shared_secret.length; i++) {
+				ret2[i] = shared_secret[i];
+			}
+
+			System.out.println("Here's the message I got ENCRYPTED: " + Arrays.toString(received));			
+
+			//System.out.println("Here's my converted key: " + Arrays.toString(decoded_key));
+
+			MyDecrypt decrypt = new MyDecrypt(ret2, received, received.length);
 			decrypt.start();
 			try {
 				decrypt.join();
-				String message = decrypt.getDecrpyted_message();
-				System.out.println("Here's the messsage I got DECRYPTED: " + message);
+				decrypt.getDecrpyted_message();
+				//System.out.println("Here's the messsage I got DECRYPTED: " + Arrays.toString(message));
+				//String str = new String(message, "UTF-8");
+				System.out.print("Here's what I really got: " + Arrays.toString(received));
 			} catch (Exception e) {
 				System.out.println(e);
 			}
