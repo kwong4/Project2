@@ -77,7 +77,7 @@ public class Client {
 			int[] username_int_arr = convertBytetoIntArr(username_byte_arr);
 			
 			byte[] password_byte_arr = password.getBytes();
-			int[] password_int_arr = convertBytetoIntArr(username_byte_arr);
+			int[] password_int_arr = convertBytetoIntArr(password_byte_arr);
 
 			// Convert received message to int array
 			int[] secret_key = convertBytetoIntArr(shared_secret);
