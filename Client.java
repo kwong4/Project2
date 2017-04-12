@@ -31,6 +31,14 @@ public class Client {
 		return converted;
 	}
 	
+	public static byte[] convertInttoByteArr(int[] array) {
+		ByteBuffer byteBuffer = ByteBuffer.allocate(array.length * 4);        
+        IntBuffer intBuffer = byteBuffer.asIntBuffer();
+        intBuffer.put(array);
+        byte[] converted = byteBuffer.array();
+        return converted;
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		System.out.println("Starting Client connection...");
@@ -94,6 +102,21 @@ public class Client {
 			encrypt.encryption(password_int_arr);
 			os.writeObject(password_int_arr);
 			System.out.println("Here's the messsage I ENCRYPTED: " + Arrays.toString(password_int_arr));
+			
+			MyDecrypt decrypt = new MyDecrypt(secret_key);
+			int[] acknowledgement = (int[]) is.readObject();
+			decrypt.decryption(acknowledgement);
+			byte[] converted_ack = convertInttoByteArr(acknowledgement);
+			String string_ack = new String(converted_ack);
+			if (string_ack.equals("ACK")) {
+				System.out.println("Authorized");
+			}
+			else if (string_ack.equals("NOP")) {
+				System.out.println("Not Authorized...");
+			}
+			else {
+				System.out.println("Error receiving ack");
+			}
 		}
 		catch (Exception e){
 			System.out.println("Error");

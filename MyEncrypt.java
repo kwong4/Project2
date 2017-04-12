@@ -1,4 +1,4 @@
-public class MyEncrypt extends Thread{
+public class MyEncrypt{
 	
 	// Key and message variables
 	private int[] secret_key;
