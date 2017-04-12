@@ -155,6 +155,10 @@ public class Client {
 
 						FileOutputStream stream = new FileOutputStream(filename);
 						try {
+							System.out.println("What we got: " + file_str);
+							//BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+							//bw.write(file_str);
+							//bw.close();
 							stream.write(file_byte);
 						}
 						catch (Exception e) {

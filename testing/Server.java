@@ -1,7 +1,5 @@
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -187,9 +185,10 @@ public class Server implements Runnable {
 					byte[] filename_byte = convertInttoByteArr(filename);
 					String filename_str = new String(filename_byte);
 					
-					if (!filename_str.equals("FIN")) {
+					System.out.println("Checking if file is present..");
+					if (!filename.equals("FIN")) {
 						File file = new File(filename_str);
-
+						
 						if (file.exists()) {
 							System.out.println("File is present. Sending..");
 							ack = new String("ACK");
@@ -197,13 +196,8 @@ public class Server implements Runnable {
 							ack_int = convertBytetoIntArr(ack_byte);
 							encrypt.encryption(ack_int);
 							os.writeObject(ack_int);
-
+							
 							byte[] file_byte = new byte[(int) file.length()];
-
-							FileInputStream fis = new FileInputStream(file);
-							BufferedInputStream bis = new BufferedInputStream(fis);
-							bis.read(file_byte, 0, file_byte.length);							
-
 							int[] file_int = convertBytetoIntArr(file_byte);
 							
 							encrypt.encryption(file_int);
