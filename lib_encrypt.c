@@ -5,6 +5,7 @@
 #include <string.h>
 #include "MyEncrypt.h"
 
+// Defintion of encrypt
 void encrypt (int *v, int *k);
 
 // Defines the JNICALL of the MyEncrypt for encrypt

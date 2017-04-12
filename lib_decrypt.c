@@ -5,6 +5,7 @@
 #include <string.h>
 #include "MyDecrypt.h"
 
+// Defintion of decrypt
 void decrypt (int *v, int *k);
 
 // Defines the JNICALL of the MyDecrypt for decrypt

@@ -1,6 +1,14 @@
+// Name: Kevin Wong
+// ID: 1402456
+
+/*
+ * MyEncrypt class used to call encrpyt from c implementation
+ * to encrypt data
+ */
+
 public class MyEncrypt{
 	
-	// Key and message variables
+	// Secret key variable
 	private int[] secret_key;
 	
 	// Constructor for MyEncrypt
@@ -11,10 +19,10 @@ public class MyEncrypt{
 	public int[] encryption(int[] message) {
 		try {
 			
-			// Load encryption library
+			// Load encrypt library
 			System.loadLibrary("encrypt");
 
-			// Runs the C implementation of encryption
+			// Runs the C implementation of encrypt
 			encrypt(this.secret_key, message);
 			
 		}
@@ -24,6 +32,6 @@ public class MyEncrypt{
 		return message;
 	}
 		
-	// Native method for insertionsort
+	// Native method for encrypt
 	public native void encrypt(int[] secret_key, int[] message);	
 }
