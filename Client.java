@@ -27,82 +27,55 @@ public class Client {
 		// TODO Auto-generated method stub
 		System.out.println("Starting Client connection...");
 		try {
+			// Connect to server
 			Socket clientSocket = new Socket(InetAddress.getByName("localhost"), 16000);
+			
+			// Create input and output communication streams
 			BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			PrintWriter out =  new PrintWriter(clientSocket.getOutputStream(), true);
 			ObjectOutputStream os = new ObjectOutputStream(clientSocket.getOutputStream());
 			ObjectInputStream is = new ObjectInputStream(clientSocket.getInputStream());
-			// Generate Private Key
-//			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-//			keyGen.init(256);
-//			SecretKey secretkey = keyGen.generateKey();
+			
+			// Generate Private Key and Public Key Pair with Diffie Hellman
 			KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DH");
 			keyGen.initialize(512);
 			KeyPair pair = keyGen.generateKeyPair();
 			PrivateKey secretkey = pair.getPrivate();
 			PublicKey publickey = pair.getPublic();
 			
-			String encodedKey = Base64.getEncoder().encodeToString(secretkey.getEncoded());
-			System.out.println("Here's my privatekey: " + encodedKey);
-			
-			//Setup KeyAgreement
+			//KeyAgreement Setup
 			KeyAgreement keyAgree = KeyAgreement.getInstance("DH");
 			keyAgree.init(secretkey);
 			//keyAgree.doPhase(secretkey, false);
 			
-			// Encode key
-			encodedKey = Base64.getEncoder().encodeToString(publickey.getEncoded());
-			
-			System.out.println("Here's what I'm about to send" + encodedKey);
-			// Send public key
+			// Send Public Key
 			os.writeObject(publickey);
-			//out.println(encodedKey);
 
+			// Receive Client's Public Key
 			PublicKey received_publickey = (PublicKey) is.readObject();
 			
-			encodedKey = Base64.getEncoder().encodeToString(received_publickey.getEncoded());
-			System.out.println("Here's what I got" + encodedKey);
-			
-			keyAgree.doPhase(received_publickey, true);
-			
 			// Generate Secret Key
+			keyAgree.doPhase(received_publickey, true);
 			byte[] shared_secret = keyAgree.generateSecret();
-			//encodedKey = Base64.getEncoder().encodeToString(shared_secret.getEncoded());
-			System.out.println("HERE IS MY SECRET KEY!!!" + Arrays.toString(shared_secret));
-			
-			//byte[] decoded_key = Base64.getDecoder().decode(encodedKey);
-			//byte[] decoded_secret_key = Base64.getDecoder().decode(shared_secret);
-			//IntBuffer intBuf = ByteBuffer.wrap(decoded_key).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
-			//int[] converted_key = new int[intBuf.remaining()];
 
 			String test = "hello";
 			byte[] tester = test.getBytes();
-
-			System.out.println("Message to be sent" + Arrays.toString(tester));
 
 			int[] ret = new int[tester.length];
 			for (int i = 0; i < tester.length; i++) {
 				ret[i] = tester[i];
 			}
 
-			int[] ret2 = new int[shared_secret.length];
+			// Convert received message to int array
+			int[] secret_key = new int[shared_secret.length];
 			for (int i = 0; i < shared_secret.length; i++) {
-				ret2[i] = shared_secret[i];
+				secret_key[i] = shared_secret[i];
 			}
-			
-			//System.out.println("Here's my converted key: " + Arrays.toString(converted_key));
 
-			MyEncrypt encrypt = new MyEncrypt(ret2, ret, 6);
-			encrypt.start();
-			try {
-				encrypt.join();
-				encrypt.getEncrpyted_message();
-				System.out.println("Here's the messsage I ENCRYPTED: " + Arrays.toString(ret));
-				os.writeObject(ret);
-				//out.println(message);
-			} catch (Exception e) {
-				System.out.println(e);
-			}
+			MyEncrypt encrypt = new MyEncrypt(secret_key, ret);
+			encrypt.encryption();
+			System.out.println("Here's the messsage I ENCRYPTED: " + Arrays.toString(ret));
+			os.writeObject(ret);
 		}
 		catch (Exception e){
 			System.out.println("Error");

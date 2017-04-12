@@ -7,19 +7,22 @@
 
 void decrypt (int *v, int *k);
 
-// Defines the JNICALL of the MyInsertionSort for insertionsort
+// Defines the JNICALL of the MyDecrypt for decrypt
 JNIEXPORT void JNICALL Java_MyDecrypt_decrypt
 (JNIEnv *env, jobject object, jintArray secret_key, jintArray message, jint size_array){
 
+  // Get Size of message
   int len = (*env)->GetArrayLength(env, message);
 
+  // Convert jintArray to jints
   jint* converted_key = (*env)->GetIntArrayElements(env, secret_key, 0);
   jint* converted_message = (*env)->GetIntArrayElements(env, message, 0);
 	
+  // Decrypt Message
   decrypt(converted_message, converted_key);
 
+  // Pass by Reference result back into message
   (*env)->SetIntArrayRegion(env, message, 0, len, converted_message);
-
 }
 
 void decrypt (int *v, int *k){

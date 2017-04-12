@@ -1,42 +1,35 @@
-import java.util.Arrays;
-
-public class MyDecrypt extends Thread{
+public class MyDecrypt{
+	
+	// Key and message variables
 	private int[] secret_key;
-	private int size;
 	private int[] message;
-	private int[] decrpyted_message;
-
+	
+	// Get Decrypted Message
 	public int[] getDecrpyted_message() {
 		return this.message;
 	}
 	
 	// Constructor for MyEncrypt
-	public MyDecrypt(int[] secret_key, int[] message, int size) {
+	public MyDecrypt(int[] secret_key, int[] message) {
 		this.secret_key = secret_key;
-		this.size = size;
 		this.message = message;
 	}
-
-	// Thread method required to overwrite to use run Thread
-	public void run(){
+	
+	public void decryption() {
+		try {
 			
-		try{
-			//System.out.println("Here's my converted key inside MyDecrypt: " + Arrays.toString(this.secret_key));
-			// Loads the C library for insertionsort
+			// Load decryption library
 			System.loadLibrary("decrypt");
 
-			// Runs the C implementation of insertionsort
-			decrypt(this.secret_key, this.message, this.size);
+			// Runs the C implementation of decryption
+			decrypt(this.secret_key, this.message);
 		}
-		
-		// Checks if we timed out
-		catch (ThreadDeath td){
-			System.out.println("Thread Timed Out");
-			//decrpyted_message = "";
-			throw new ThreadDeath();
+		catch (Exception e) {
+			System.out.println(e);
 		}
 	}
+
 		
-	// Native method for insertionsort
+	// Native method for decryption
 	public native void decrypt(int[] secret_key, int[] message, int size);	
 }
