@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.lang.StringBuilder;
 import java.util.Random;
 
 public class ShadowTable {
@@ -16,6 +17,14 @@ public class ShadowTable {
 		byte[] salt = new byte[16];
 		RANDOM.nextBytes(salt);
     	return salt;
+	}
+
+	public static String ByteArrayToString(byte[] ba) {
+		StringBuilder hex = new StringBuilder(ba.Length * 2);
+		for(int i = 0; i < ba.length; i++) {
+			hex.AppendFormat("{0:x2}", ba[i]);
+		}
+		return hex.ToString();
 	}
 	
 	public static void main(String[] args) {
@@ -46,7 +55,7 @@ public class ShadowTable {
 				byte[] salted_password = outputStream.toByteArray();
 				
 				messageDigest.update(salted_password);
-				String encryptedpassword = new String(messageDigest.digest());
+				String encryptedpassword = ByteArrayToString(messageDigest.digest());
 				
 				File file = new File("shadow_table.txt");
 				if (!file.exists()) {
@@ -59,8 +68,9 @@ public class ShadowTable {
 				String shadow_table_entry = username + "$" + str_salt + "$" + encryptedpassword;
 				
 				bw.write(shadow_table_entry);
-				fw.close();
+				bw.newLine();
 				bw.close();
+				fw.close();
 			}
 		}
 		catch (Exception e) {

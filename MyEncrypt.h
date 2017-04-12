@@ -7,12 +7,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#undef MyEncrypt_MIN_PRIORITY
-#define MyEncrypt_MIN_PRIORITY 1L
-#undef MyEncrypt_NORM_PRIORITY
-#define MyEncrypt_NORM_PRIORITY 5L
-#undef MyEncrypt_MAX_PRIORITY
-#define MyEncrypt_MAX_PRIORITY 10L
 /*
  * Class:     MyEncrypt
  * Method:    encrypt

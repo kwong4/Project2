@@ -34,13 +34,17 @@ public class Server implements Runnable {
 		}
 		return converted;
 	}
-	
+
 	public static byte[] convertInttoByteArr(int[] array) {
 		ByteBuffer byteBuffer = ByteBuffer.allocate(array.length * 4);        
         IntBuffer intBuffer = byteBuffer.asIntBuffer();
         intBuffer.put(array);
         byte[] converted = byteBuffer.array();
-        return converted;
+		byte[] converted_nopad = new byte[array.length]; 
+		for (int i = 0; i < array.length; i++) {
+			converted_nopad[i] = converted[(i * 4) + 3];
+		}
+        return converted_nopad;
 	}
 	
 	public static int shadow_lookup(int[] username, int[] password) {
@@ -57,8 +61,10 @@ public class Server implements Runnable {
 			String line = null;
 			while((line = br.readLine()) != null) {
 				String shadow_table_entry[] = line.split("$");
-
+				System.out.println("Comparing his: " + str_username);
+				System.out.println("Comparing withours: " + shadow_table_entry[0]);
 				if (str_username.equals(shadow_table_entry[0])) {
+					System.out.println("Username passed");
 					outputStream.reset();
 					outputStream.write(password_byte);
 					outputStream.write(shadow_table_entry[1].getBytes());
@@ -66,6 +72,8 @@ public class Server implements Runnable {
 					
 					messageDigest.update(salted_password);
 					String encryptedpassword = new String(messageDigest.digest());
+					System.out.println("Comparing his: " + encryptedpassword);
+					System.out.println("Comparing withours: " + shadow_table_entry[2]);
 					if (encryptedpassword.equals(shadow_table_entry[2])) {
 						return 1;
 					}
@@ -148,9 +156,9 @@ public class Server implements Runnable {
 			System.out.println("Here's what I really got- password: " + Arrays.toString(password));
 			
 			MyEncrypt encrypt = new MyEncrypt(secret_key);
-			
+
 			if (shadow_lookup(username, password) == 1) {
-				ack = "ACK";
+				ack = new String("ACK");
 				byte[] ack_byte = ack.getBytes();
 				int[] ack_int = convertBytetoIntArr(ack_byte);
 				encrypt.encryption(ack_int);
@@ -158,7 +166,7 @@ public class Server implements Runnable {
 				System.out.println("User is authorized!");
 			}
 			else {
-				ack = "NOP";
+				ack = new String("NOP");
 				byte[] ack_byte = ack.getBytes();
 				int[] ack_int = convertBytetoIntArr(ack_byte);
 				encrypt.encryption(ack_int);

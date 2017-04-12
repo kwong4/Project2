@@ -36,7 +36,11 @@ public class Client {
         IntBuffer intBuffer = byteBuffer.asIntBuffer();
         intBuffer.put(array);
         byte[] converted = byteBuffer.array();
-        return converted;
+		byte[] converted_nopad = new byte[array.length]; 
+		for (int i = 0; i < array.length; i++) {
+			converted_nopad[i] = converted[(i * 4) + 3];
+		}
+        return converted_nopad;
 	}
 	
 	public static void main(String[] args) {
@@ -105,9 +109,18 @@ public class Client {
 			
 			MyDecrypt decrypt = new MyDecrypt(secret_key);
 			int[] acknowledgement = (int[]) is.readObject();
+
+			String acked = new String("NOP");
+			byte[] comparison = acked.getBytes();
+
 			decrypt.decryption(acknowledgement);
+			//System.out.println("test");
 			byte[] converted_ack = convertInttoByteArr(acknowledgement);
+
+			System.out.println("Here's what we got : " + Arrays.toString(converted_ack));
+			System.out.println("Here's what is it  : " + Arrays.toString(comparison));
 			String string_ack = new String(converted_ack);
+			System.out.println("What I received a" + string_ack + "a");
 			if (string_ack.equals("ACK")) {
 				System.out.println("Authorized");
 			}
