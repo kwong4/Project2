@@ -73,20 +73,24 @@ public class Server implements Runnable {
 			keyAgree.doPhase(received_publickey, true);
 			byte[] shared_secret = keyAgree.generateSecret();
 
-			// Message
-			int[] received = (int[]) is.readObject();
+			// Username
+			int[] username = (int[]) is.readObject();
+			
+			// Password
+			int[] password = (int[]) is.readObject();
 
 			// Convert received message to int array
-			int[] secret_key = convertBytetoIntArr(shared_secret);
-
-			System.out.println("Here's the message I got ENCRYPTED: " + Arrays.toString(received));			
+			int[] secret_key = convertBytetoIntArr(shared_secret);		
 
 			// Create Decryption Class
 			MyDecrypt decrypt = new MyDecrypt(secret_key);
 			
 			// Decrypt Message
-			decrypt.decryption(received);
-			System.out.print("Here's what I really got: " + Arrays.toString(received));
+			decrypt.decryption(username);
+			System.out.print("Here's what I really got- username: " + Arrays.toString(username));
+			
+			decrypt.decryption(password);
+			System.out.print("Here's what I really got- password: " + Arrays.toString(password));
 			
 			// Close socket
 			csocket.close();
