@@ -20,11 +20,11 @@ public class ShadowTable {
 	}
 
 	public static String ByteArrayToString(byte[] ba) {
-		StringBuilder hex = new StringBuilder(ba.Length * 2);
+		StringBuilder hex = new StringBuilder(ba.length * 2);
 		for(int i = 0; i < ba.length; i++) {
-			hex.AppendFormat("{0:x2}", ba[i]);
+			hex.append(String.format("%02X", ba[i]));
 		}
-		return hex.ToString();
+		return hex.toString();
 	}
 	
 	public static void main(String[] args) {
@@ -48,10 +48,10 @@ public class ShadowTable {
 				String password = br.readLine();
 				
 				byte[] salt = getNextSalt();
-				String str_salt = new String(salt);
-				
-				outputStream.write(password.getBytes());
-				outputStream.write(salt);
+				String str_salt = ByteArrayToString(salt);
+				String combined = str_salt + password;
+
+				outputStream.write(combined.getBytes());
 				byte[] salted_password = outputStream.toByteArray();
 				
 				messageDigest.update(salted_password);
@@ -68,6 +68,8 @@ public class ShadowTable {
 				String shadow_table_entry = username + "$" + str_salt + "$" + encryptedpassword;
 				
 				bw.write(shadow_table_entry);
+				bw.newLine();
+				bw.write(combined);
 				bw.newLine();
 				bw.close();
 				fw.close();

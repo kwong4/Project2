@@ -20,6 +20,7 @@ import java.util.Base64;
 import java.util.Random;
 import java.util.Arrays;
 import javax.crypto.KeyAgreement;
+import java.lang.StringBuilder;
 
 public class Server implements Runnable {
 	Socket csocket;
@@ -46,6 +47,14 @@ public class Server implements Runnable {
 		}
         return converted_nopad;
 	}
+
+	public static String ByteArrayToString(byte[] ba) {
+		StringBuilder hex = new StringBuilder(ba.length * 2);
+		for(int i = 0; i < ba.length; i++) {
+			hex.append(String.format("%02X", ba[i]));
+		}
+		return hex.toString();
+	}
 	
 	public static int shadow_lookup(int[] username, int[] password) {
 		try {
@@ -57,21 +66,24 @@ public class Server implements Runnable {
 			byte[] username_byte = convertInttoByteArr(username);
 			byte[] password_byte = convertInttoByteArr(password);
 			String str_username = new String(username_byte);
+			String str_password = new String(password_byte);
 			
+			System.out.println("Password in str: " + str_password);
+			System.out.println("Password in byte: " + Arrays.toString(password_byte));
 			String line = null;
 			while((line = br.readLine()) != null) {
-				String shadow_table_entry[] = line.split("$");
+				String[] shadow_table_entry = line.split("\\$");
 				System.out.println("Comparing his: " + str_username);
 				System.out.println("Comparing withours: " + shadow_table_entry[0]);
 				if (str_username.equals(shadow_table_entry[0])) {
 					System.out.println("Username passed");
 					outputStream.reset();
-					outputStream.write(password_byte);
-					outputStream.write(shadow_table_entry[1].getBytes());
+					String combined = shadow_table_entry[1] + str_password;
+					outputStream.write(combined.getBytes());
 					byte[] salted_password = outputStream.toByteArray();
 					
 					messageDigest.update(salted_password);
-					String encryptedpassword = new String(messageDigest.digest());
+					String encryptedpassword = ByteArrayToString(messageDigest.digest());
 					System.out.println("Comparing his: " + encryptedpassword);
 					System.out.println("Comparing withours: " + shadow_table_entry[2]);
 					if (encryptedpassword.equals(shadow_table_entry[2])) {
