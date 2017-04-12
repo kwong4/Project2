@@ -154,7 +154,7 @@ public class Server implements Runnable {
 	// Server handling procedure for clients
 	public void run() {
 		try {
-			
+			System.out.println("Currently Connected to Client marked as #" + Thread.currentThread().getId());
 			// Create input and output communication streams
 			ObjectOutputStream os = new ObjectOutputStream(csocket.getOutputStream());
 			ObjectInputStream is = new ObjectInputStream(csocket.getInputStream());
