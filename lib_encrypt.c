@@ -9,7 +9,7 @@ void encrypt (int *v, int *k);
 
 // Defines the JNICALL of the MyEncrypt for encrypt
 JNIEXPORT void JNICALL Java_MyEncrypt_encrypt
-(JNIEnv *env, jobject object, jintArray secret_key, jintArray message, jint size_array){
+(JNIEnv *env, jobject object, jintArray secret_key, jintArray message){
 
   // Get Size of message
   int len = (*env)->GetArrayLength(env, message);

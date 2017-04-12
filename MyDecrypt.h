@@ -7,19 +7,13 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#undef MyDecrypt_MIN_PRIORITY
-#define MyDecrypt_MIN_PRIORITY 1L
-#undef MyDecrypt_NORM_PRIORITY
-#define MyDecrypt_NORM_PRIORITY 5L
-#undef MyDecrypt_MAX_PRIORITY
-#define MyDecrypt_MAX_PRIORITY 10L
 /*
  * Class:     MyDecrypt
  * Method:    decrypt
- * Signature: ([I[II)V
+ * Signature: ([I[I)V
  */
 JNIEXPORT void JNICALL Java_MyDecrypt_decrypt
-  (JNIEnv *, jobject, jintArray, jintArray, jint);
+  (JNIEnv *, jobject, jintArray, jintArray);
 
 #ifdef __cplusplus
 }

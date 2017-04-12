@@ -28,8 +28,7 @@ public class MyDecrypt{
 			System.out.println(e);
 		}
 	}
-
-		
+	
 	// Native method for decryption
-	public native void decrypt(int[] secret_key, int[] message, int size);	
+	public native void decrypt(int[] secret_key, int[] message);	
 }

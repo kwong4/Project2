@@ -30,5 +30,5 @@ public class MyEncrypt extends Thread{
 	}
 		
 	// Native method for insertionsort
-	public native void encrypt(int[] secret_key, int[] message, int size);	
+	public native void encrypt(int[] secret_key, int[] message);	
 }
