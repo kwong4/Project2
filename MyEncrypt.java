@@ -2,31 +2,26 @@ public class MyEncrypt extends Thread{
 	
 	// Key and message variables
 	private int[] secret_key;
-	private int[] message;
-
-	// Get Encrypted Message
-	public int[] getEncrpyted_message() {
-		return message;
-	}
 	
 	// Constructor for MyEncrypt
-	public MyEncrypt(int[] secret_key, int[] message) {
+	public MyEncrypt(int[] secret_key) {
 		this.secret_key = secret_key;
-		this.message = message;
 	}
 
-	public void encryption() {
+	public int[] encryption(int[] message) {
 		try {
 			
 			// Load encryption library
 			System.loadLibrary("encrypt");
 
 			// Runs the C implementation of encryption
-			encrypt(this.secret_key, this.message);
+			encrypt(this.secret_key, message);
+			
 		}
 		catch (Exception e) {
 			System.out.println(e);
 		}
+		return message;
 	}
 		
 	// Native method for insertionsort

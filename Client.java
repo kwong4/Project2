@@ -43,6 +43,7 @@ public class Client {
 			PrintWriter out =  new PrintWriter(clientSocket.getOutputStream(), true);
 			ObjectOutputStream os = new ObjectOutputStream(clientSocket.getOutputStream());
 			ObjectInputStream is = new ObjectInputStream(clientSocket.getInputStream());
+			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 			
 			// Generate Private Key and Public Key Pair with Diffie Hellman
 			KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DH");
@@ -66,21 +67,33 @@ public class Client {
 			keyAgree.doPhase(received_publickey, true);
 			byte[] shared_secret = keyAgree.generateSecret();
 
-			String test = "hello";
-			byte[] tester = test.getBytes();
-
-			int[] ret = new int[tester.length];
-			for (int i = 0; i < tester.length; i++) {
-				ret[i] = tester[i];
-			}
+			System.out.println("Please enter a username: ");
+			String username = br.readLine();
+			
+			System.out.println("Please enter a password: ");
+			String password = br.readLine();
+			
+			byte[] username_byte_arr = username.getBytes();
+			int[] username_int_arr = convertBytetoIntArr(username_byte_arr);
+			
+			byte[] password_byte_arr = password.getBytes();
+			int[] password_int_arr = convertBytetoIntArr(username_byte_arr);
 
 			// Convert received message to int array
 			int[] secret_key = convertBytetoIntArr(shared_secret);
 
-			MyEncrypt encrypt = new MyEncrypt(secret_key, ret);
-			encrypt.encryption();
-			System.out.println("Here's the messsage I ENCRYPTED: " + Arrays.toString(ret));
-			os.writeObject(ret);
+			System.out.println("Here's the messsage before ENCRYPTION: " + Arrays.toString(username_int_arr));
+			
+			MyEncrypt encrypt = new MyEncrypt(secret_key);
+			encrypt.encryption(username_int_arr);
+			os.writeObject(username_int_arr);
+			System.out.println("Here's the messsage I ENCRYPTED: " + Arrays.toString(username_int_arr));
+			
+			System.out.println("Here's the messsage before ENCRYPTION: " + Arrays.toString(password_int_arr));
+			
+			encrypt.encryption(password_int_arr);
+			os.writeObject(password_int_arr);
+			System.out.println("Here's the messsage I ENCRYPTED: " + Arrays.toString(password_int_arr));
 		}
 		catch (Exception e){
 			System.out.println("Error");

@@ -19,6 +19,14 @@ public class Server implements Runnable {
 	Server(Socket csocket) {
 		this.csocket = csocket;
 	}
+	
+	public static int[] convertBytetoIntArr(byte[] array) {
+		int[] converted = new int[array.length];
+		for (int i = 0; i < array.length; i++) {
+			converted[i] = array[i];
+		}
+		return converted;
+	}
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
@@ -69,18 +77,15 @@ public class Server implements Runnable {
 			int[] received = (int[]) is.readObject();
 
 			// Convert received message to int array
-			int[] secret_key = new int[shared_secret.length];
-			for (int i = 0; i < shared_secret.length; i++) {
-				secret_key[i] = shared_secret[i];
-			}
+			int[] secret_key = convertBytetoIntArr(shared_secret);
 
 			System.out.println("Here's the message I got ENCRYPTED: " + Arrays.toString(received));			
 
 			// Create Decryption Class
-			MyDecrypt decrypt = new MyDecrypt(secret_key, received);
+			MyDecrypt decrypt = new MyDecrypt(secret_key);
 			
 			// Decrypt Message
-			decrypt.decryption();
+			decrypt.decryption(received);
 			System.out.print("Here's what I really got: " + Arrays.toString(received));
 			
 			// Close socket
