@@ -67,6 +67,8 @@ public class ShadowTable {
 				
 				String shadow_table_entry = username + "$" + str_salt + "$" + encryptedpassword;
 				
+				bw.write(shadow_table_entry);
+				bw.newLine();
 				bw.close();
 				fw.close();
 			}
