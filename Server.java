@@ -302,7 +302,7 @@ public class Server implements Runnable {
 				csocket.close();
 			}
 		} catch(Exception e) {
-			System.out.println(e);
+			System.out.println("Connection Closed.");
 		}
 	}
 }
