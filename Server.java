@@ -266,7 +266,6 @@ public class Server implements Runnable {
 							int[] file_int = convertBytetoIntArr(file_byte);
 							encrypt.encryption(file_int);
 							os.writeObject(file_int);
-							bis.close();
 						}
 						else {
 							// File is not present. Send file not found signal

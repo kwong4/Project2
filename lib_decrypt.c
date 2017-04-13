@@ -5,7 +5,6 @@
 #include <string.h>
 #include "MyDecrypt.h"
 
-// Defintion of decrypt
 void decrypt (int *v, int *k);
 
 // Defines the JNICALL of the MyDecrypt for decrypt
@@ -19,8 +18,12 @@ JNIEXPORT void JNICALL Java_MyDecrypt_decrypt
   jint* converted_key = (*env)->GetIntArrayElements(env, secret_key, 0);
   jint* converted_message = (*env)->GetIntArrayElements(env, message, 0);
 	
+  int i = 0;
+
   // Decrypt Message
-  decrypt(converted_message, converted_key);
+  for (i = (len - 2); i >= 0 ; i--) {
+    decrypt(&converted_message[i], converted_key);
+  }
 
   // Pass by Reference result back into message
   (*env)->SetIntArrayRegion(env, message, 0, len, converted_message);

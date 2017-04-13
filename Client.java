@@ -15,6 +15,7 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import javax.crypto.KeyAgreement;
+import java.util.Arrays;
 
 /*
  * This is the Client that connects to a Server pair
@@ -101,11 +102,11 @@ public class Client {
 			
 			// Creates encryption class
 			MyEncrypt encrypt = new MyEncrypt(secret_key);
-			
+
 			// Encrypts username and sends to server
 			encrypt.encryption(username_int_arr);
 			os.writeObject(username_int_arr);
-			
+
 			// Encrypts password and sends to server
 			encrypt.encryption(password_int_arr);
 			os.writeObject(password_int_arr);
@@ -120,7 +121,7 @@ public class Client {
 			decrypt.decryption(acknowledgement);
 			byte[] converted_ack = convertInttoByteArr(acknowledgement);
 			String string_ack = new String(converted_ack);
-			
+
 			// Checks if the acknowledgement is good
 			if (string_ack.equals("ACK")) {
 				System.out.println("Authorized");
