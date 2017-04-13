@@ -86,10 +86,22 @@ public class Client {
 			System.out.println("Please enter a username: ");
 			String username = br.readLine();
 			
+			if (username.length() <= 1) {
+				System.out.println("Error. Only inputs greater than 1 length is valid.");
+				clientSocket.close();
+				return;
+			}
+
 			// Receives password from user
 			System.out.println("Please enter a password: ");
 			String password = br.readLine();
 			
+			if (password.length() <= 1) {
+				System.out.println("Error. Only inputs greater than 1 length is valid.");
+				clientSocket.close();
+				return;
+			}
+
 			// Converts username and password into int[]
 			byte[] username_byte_arr = username.getBytes();
 			int[] username_int_arr = convertBytetoIntArr(username_byte_arr);
@@ -132,6 +144,13 @@ public class Client {
 					// Obtain filename from user and converts into int[]
 					System.out.println("Please enter a filename: (Type FIN if no more files to be requests)");
 					String filename = br.readLine();
+
+					if (filename.length() <= 1) {
+						System.out.println("Error. Only inputs greater than 1 length is valid.");
+						clientSocket.close();
+						return;
+					}
+					
 					byte[] filename_byte_arr = filename.getBytes();
 					int[] filename_int_arr = convertBytetoIntArr(filename_byte_arr);
 					

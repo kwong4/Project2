@@ -68,9 +68,19 @@ public class ShadowTable {
 				System.out.println("Please enter a username to add: ");
 				String username = br.readLine();
 				
+				if (username.length() <= 1) {
+					System.out.println("Error. Only inputs greater than 1 length is valid.");
+					return;
+				}
+
 				// Gets the password to add
 				System.out.println("Please enter a password to add: ");
 				String password = br.readLine();
+
+				if (password.length() <= 1) {
+					System.out.println("Error. Only inputs greater than 1 length is valid.");
+					return;
+				}
 				
 				// Obtains next salt, convert and combine with password
 				byte[] salt = getNextSalt();
