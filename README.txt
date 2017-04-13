@@ -46,6 +46,7 @@ After the Client is authenticated, the Client is able to sent filenames to reque
 This will keep looping (Asking the Client for filenames and the Server will keep giving the corresponding reply and send the files if available), until the Client sends a encrypted finished signal ("FIN"). Once the Server obtains this signal, they will disconnect the thread, and both programs will end. However, the main Server program will still run and in addition will keep accepting multiple Clients at the same time. This can all happen concurrently.
 
 Some Notes:
+- Please keep the Client and Server in different directories to verify correct operation of the file transfer. As transfering the same file to the same directory may cause issues if both are using it at the same time. (Reading from the Server and Writing from the Client).
 - In the Sequencing Diagram, not all of the conversions were noted as they were repetitive
 - The Client, and ShadowTable only accept inputs that are >= 2
 - The comparsions of the messages were done in the lowest level (String conversions) to ensure that any padding or additional affects of the conversions were verified to be eliminated. In addition the program works on any file.

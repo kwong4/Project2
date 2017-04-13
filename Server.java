@@ -282,7 +282,7 @@ public class Server implements Runnable {
 					}
 				}
 				// Close if terminating signal is found
-				System.out.println("Ending signal detected... Closing Connection");
+				System.out.println("Ending signal detected... Closing Connection for " + Thread.currentThread().getId());
 				csocket.close();
 			}
 			else {
@@ -298,7 +298,7 @@ public class Server implements Runnable {
 				csocket.close();
 			}
 		} catch(Exception e) {
-			System.out.println("Connection Closed.");
+			System.out.println(e);
 		}
 	}
 }
