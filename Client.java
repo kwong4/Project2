@@ -74,6 +74,7 @@ public class Client {
 			
 			// Send Public Key
 			os.writeObject(publickey);
+			os.flush();
 
 			// Receive Client's Public Key
 			PublicKey received_publickey = (PublicKey) is.readObject();
@@ -83,7 +84,7 @@ public class Client {
 			byte[] shared_secret = keyAgree.generateSecret();
 
 			// Receives username from user
-			System.out.println("Please enter a username: ");
+			System.out.println("Please enter a username (More than 1 character): ");
 			String username = br.readLine();
 			
 			if (username.length() <= 1) {
@@ -93,7 +94,7 @@ public class Client {
 			}
 
 			// Receives password from user
-			System.out.println("Please enter a password: ");
+			System.out.println("Please enter a password (More than 1 character): ");
 			String password = br.readLine();
 			
 			if (password.length() <= 1) {
@@ -118,10 +119,12 @@ public class Client {
 			// Encrypts username and sends to server
 			encrypt.encryption(username_int_arr);
 			os.writeObject(username_int_arr);
+			os.flush();
 
 			// Encrypts password and sends to server
 			encrypt.encryption(password_int_arr);
 			os.writeObject(password_int_arr);
+			os.flush();
 			
 			// Creates decryption class
 			MyDecrypt decrypt = new MyDecrypt(secret_key);
@@ -134,6 +137,8 @@ public class Client {
 			byte[] converted_ack = convertInttoByteArr(acknowledgement);
 			String string_ack = new String(converted_ack);
 
+			System.out.println("Checking Authorization...");
+
 			// Checks if the acknowledgement is good
 			if (string_ack.equals("ACK")) {
 				System.out.println("Authorized");
@@ -142,7 +147,9 @@ public class Client {
 				while (true) {
 					
 					// Obtain filename from user and converts into int[]
-					System.out.println("Please enter a filename: (Type FIN if no more files to be requests)");
+					System.out.println("");
+					System.out.println("Type FIN if no more files to be requests");
+					System.out.println("Please enter a filename (More than 1 character): ");
 					String filename = br.readLine();
 
 					if (filename.length() <= 1) {
@@ -157,6 +164,7 @@ public class Client {
 					// Encrypts and sends the encrypted filename
 					encrypt.encryption(filename_int_arr);
 					os.writeObject(filename_int_arr);
+					os.flush();
 					
 					// Receive acknowledgement from server
 					acknowledgement = (int[]) is.readObject();

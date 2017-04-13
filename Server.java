@@ -176,6 +176,7 @@ public class Server implements Runnable {
 			
 			// Send Public Key
 			os.writeObject(publickey);
+			os.flush();
 			
 			// Receive Client's Public Key
 			PublicKey received_publickey = (PublicKey) is.readObject();
@@ -222,6 +223,7 @@ public class Server implements Runnable {
 				// Encrypt and send acknowledgement
 				encrypt.encryption(ack_int);
 				os.writeObject(ack_int);
+				os.flush();
 				
 				System.out.println("User is authorized! Sent Acknowledgement");
 				
@@ -275,6 +277,7 @@ public class Server implements Runnable {
 							ack_int = convertBytetoIntArr(ack_byte);
 							encrypt.encryption(ack_int);
 							os.writeObject(ack_int);
+							os.flush();
 						}
 					}
 					else {
@@ -292,6 +295,7 @@ public class Server implements Runnable {
 				int[] ack_int = convertBytetoIntArr(ack_byte);
 				encrypt.encryption(ack_int);
 				os.writeObject(ack_int);
+				os.flush();
 				System.out.println("User is not authorized! Exiting...");
 				
 				// Close socket

@@ -65,7 +65,7 @@ public class ShadowTable {
 				outputStream.reset();
 				
 				// Gets the username to add
-				System.out.println("Please enter a username to add: ");
+				System.out.println("Please enter a username to add (More than 1 character): ");
 				String username = br.readLine();
 				
 				if (username.length() <= 1) {
@@ -74,7 +74,7 @@ public class ShadowTable {
 				}
 
 				// Gets the password to add
-				System.out.println("Please enter a password to add: ");
+				System.out.println("Please enter a password to add (More than 1 character): ");
 				String password = br.readLine();
 
 				if (password.length() <= 1) {
